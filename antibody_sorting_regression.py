@@ -75,16 +75,8 @@ def vectorize_cdr3(s, max_len=20):
         v[i, alphabet.index(c)] = 1
     return v
 
-# print(add_cdr3_gaps("CARAPQYGLRYRDGYSAYFDI"))
-# print(add_cdr3_gaps("CARAPQYGLRYDGYSAYFDI"))
-# print(add_cdr3_gaps("CARAPQYGLRYGYSAYFDI"))
-# print(add_cdr3_gaps("CARAPQYGLRGYSAYFDI"))
-# print(add_cdr3_gaps("CARAPQYGLGYSAYFDI"))
-# print(add_cdr3_gaps("CARAPQYGLGYSAYFD"))
-# print(add_cdr3_gaps("CARHPYGSLHAFDY"))
 assert len(add_cdr3_gaps("CARAPQYGLGYSAYFDI")) == 20
 assert add_cdr3_gaps("CARAPQYGLGYSAYFDI").replace("-", "") == "CARAPQYGLGYSAYFDI"
-# print(vectorize_cdr3("CARHPYGSLHAFDY"))
 
 def cdr3_seqs_to_onehot(seqs, max_len=20):
     onehot_arr = np.zeros((len(seqs), max_len * len(alphabet)), dtype=np.float32)
@@ -234,7 +226,6 @@ for fname in [
     df["Aff3_Aff2"] = calc_enrichment(df, "Aff2", "Aff3")
 
     print((df["Aff1_Macs1"] != 0).sum(), (df["Aff2_Macs1"] != 0).sum(), (df["Aff3_Macs1"] != 0).sum(), (df["Aff3_Aff1"] != 0).sum(), (df["Aff3_Aff1"] != 0).sum(), fname, sep='\t')
-#     assert len(df[(df["Aff1_Macs1"] != 0) & ((df["Macs1"] < 5) | df["Macs1"].isnull()) & ((df["Aff1"] < 5) | df["Aff1"].isnull())]) == 0
 
 
 # # Logistic regression
@@ -248,8 +239,9 @@ for fname in [
 
 results = []
 
-print("a1/m1", "a2/m1", "a3/m1", "a2/a1", "order", "file", sep='\t')
 for sort in sorts:
+    print()
+    print(sort)
     fname = sort["filename"]
     target = fname.rsplit("/", 1)[1].split("_", 1)[0]
     light_chains = sort["light"]
@@ -285,6 +277,7 @@ for sort in sorts:
 
     df = pd.merge(df, char_df, on="key", how="left")
 
+    print("a1/m1", "a2/m1", "a3/m1", "a2/a1", "order", "file", sep='\t')
     print((df["Aff1_Macs1"] != 0).sum(), (df["Aff2_Macs1"] != 0).sum(), (df["Aff3_Macs1"] != 0).sum(), (df["Aff3_Aff1"] != 0).sum(), len(char_df), fname, sep='\t')
     #     assert len(df[(df["Aff1_Macs1"] != 0) & ((df["Macs1"] < 5) | df["Macs1"].isnull()) & ((df["Aff1"] < 5) | df["Aff1"].isnull())]) == 0
 
@@ -292,9 +285,7 @@ for sort in sorts:
     # vh_onehot = pd.get_dummies(pd.Categorical(df['heavy'], categories=IPI_VH_SEQS_V2, ordered=True))
     vl_onehot = pd.get_dummies(pd.Categorical(df['light'], categories=IPI_VL_SEQS, ordered=True))
     length_onehot = pd.get_dummies(pd.Categorical(df['CDR3'].str.len(), ordered=True))
-    print(len(df))
-    # print(vh_onehot.columns.values)
-    print(vl_onehot.columns.values)
+    print("loaded kmer arr length:", len(df))
     kmer_vh_vl_arr = np.concatenate([
         kmer_arr,
     #     vh_onehot.values,
@@ -377,7 +368,7 @@ for sort in sorts:
         roc_auc_spr = auc(fpr_val2, tpr_val2)
         print("SPR AUC:", roc_auc_spr)
 
-    print()
+    print("LR coefs:")
     coefs = pd.Series(index=clf.feature_names_in_, data=clf.coef_[0])
     print(coefs[coefs != 0].sort_values(ascending=False))
     print(coefs[coefs != 0])
@@ -411,7 +402,8 @@ for sort in sorts:
     plt.ylim([0, 1])
     plt.ylabel('True Positive Rate')
     plt.xlabel('False Positive Rate')
-    plt.show()
+    plt.savefig(f"plots/{target}_test_val_ROC_curve.pdf")
+    plt.close()
 
     fig, ax = plt.subplots()
     plt.title(f"{target} SPR")
@@ -424,7 +416,8 @@ for sort in sorts:
     labels = ["Fail" if item == "100" else item for item in labels]
     ax.set_xticks(ax.get_xticks(minor=False)[1:-1])
     ax.set_xticklabels(labels[1:-1])
-    plt.show()
+    plt.savefig(f"plots/{target}_val_SPR_scatter.pdf")
+    plt.close()
 
     fig, ax = plt.subplots()
     plt.title(f"{target} Cell Display")
@@ -437,7 +430,8 @@ for sort in sorts:
     labels = ["Fail" if item == "300" else item for item in labels]
     ax.set_xticks(ax.get_xticks(minor=False)[1:-1])
     ax.set_xticklabels(labels[1:-1])
-    plt.show()
+    plt.savefig(f"plots/{target}_val_CellDisplay_scatter.pdf")
+    plt.close()
 
 
 # In[ ]:
@@ -522,4 +516,4 @@ for sort in sorts:
     subset_df.to_csv(output_file, index=False)
 
     with pd.option_context("display.max_rows", 200):
-        display(subset_df)
+        print(subset_df)

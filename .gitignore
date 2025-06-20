@@ -4,3 +4,5 @@ zenodo_data
 scores/*.csv
 selected_abs/*.csv
 NGS_data/*.csv
+plots/*.pdf
+plots/*.png
