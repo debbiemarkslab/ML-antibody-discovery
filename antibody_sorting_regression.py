@@ -25,28 +25,28 @@ IPI_3_VL_SEQS = ['VK1-39', 'VK3-15', 'VK3-20']
 
 sorts = [
     {
-        "filename": "NGS_data/hROBO1_Test1_Lib31.csv",
+        "filename": "zenodo_data/hROBO1_Test1_Lib31.csv",
         "SPR_antigens": ["hROBO1"],
         "SPR_antigens2": ["ROBO1"],
         "light": IPI_3_VL_SEQS,
         "heavy": IPI_VH_SEQS,
     },
     {
-        "filename": "NGS_data/hROBO2N_Test1_Lib31.csv",
+        "filename": "zenodo_data/hROBO2N_Test1_Lib31.csv",
         "SPR_antigens": ["hROBO2N"],
         "SPR_antigens2": ["ROBO2N"],
         "light": IPI_3_VL_SEQS,
         "heavy": IPI_VH_SEQS,
     },
     {
-        "filename": "NGS_data/PD1-L1_Test1_Lib31.csv",
+        "filename": "zenodo_data/PD1-L1_Test1_Lib31.csv",
         "SPR_antigens": ["PD1-L1", "PD1-L1_Test1_Lib31"],
         "SPR_antigens2": ["PDL1"],
         "light": IPI_3_VL_SEQS,
         "heavy": IPI_VH_SEQS,
     },
     {
-        "filename": "NGS_data/hPD-L2_chase_Test1_Lib31.csv",
+        "filename": "zenodo_data/hPD-L2_chase_Test1_Lib31.csv",
         "SPR_antigens": ["hPD-L2"],
         "SPR_antigens2": ["PDL2"],
         "light": IPI_3_VL_SEQS,
@@ -210,10 +210,10 @@ def calc_enrichment(df, col1, col2, col1_min=None, col2_min=None):
 
 print("a1/m1", "a2/m1", "a3/m1", "a2/a1", "a3/a1", "file", sep='\t')
 for fname in [
-    "NGS_data/hROBO1_Test1_Lib31.csv",
-    "NGS_data/hROBO2N_Test1_Lib31.csv",
-    "NGS_data/PD1-L1_Test1_Lib31.csv",
-    "NGS_data/hPD-L2_chase_Test1_Lib31.csv",
+    "zenodo_data/hROBO1_Test1_Lib31.csv",
+    "zenodo_data/hROBO2N_Test1_Lib31.csv",
+    "zenodo_data/PD1-L1_Test1_Lib31.csv",
+    "zenodo_data/hPD-L2_chase_Test1_Lib31.csv",
 ]:
     df = pd.read_csv(fname)
     df = df[filter_cdr3(df["CDR3"])]
@@ -491,8 +491,8 @@ for sort in sorts:
     aff3_file = f"scores/{fname.rsplit('/', 1)[1].replace('.csv', '')}_kmer_aff3_scores.csv"
     output_file = f"selected_abs/aff1_subset_kmer_LR_{fname.rsplit('/', 1)[1].replace('.csv', '')}.csv"
     if fname not in [
-        "NGS_data/hROBO1_Test1_Lib31.csv",
-        "NGS_data/hROBO2N_Test1_Lib31.csv",
+        "zenodo_data/hROBO1_Test1_Lib31.csv",
+        "zenodo_data/hROBO2N_Test1_Lib31.csv",
     ]:
         continue
 
@@ -504,7 +504,7 @@ for sort in sorts:
     min_aff1_frac = 1 / 5000
     min_lr_score = 0.8
     min_dist_to_ordered = 5
-    min_pairwise_dist = 5 if fname != "NGS_data/hPD-L2_chase_Test1_Lib31.csv" else 3
+    min_pairwise_dist = 5 if fname != "zenodo_data/hPD-L2_chase_Test1_Lib31.csv" else 3
 
     subset_df = df[(df["Aff1"] > df["Aff1"].sum() * min_aff1_frac) & df["SEC"].isnull() & (df["LR_score"] > min_lr_score)].sort_values(by="LR_score", ascending=False)
     subset_df["min_dist_to_ordered"] = subset_df["CDR3"].apply(min_levenshtein, args=(ordered_set["CDR3"],))

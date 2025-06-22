@@ -7,6 +7,6 @@ This repo contains the code to run the methods described in the paper _High-Thro
 ## Downloading data
 
 ```bash
-wget https://zenodo.org/api/records/15367597/files-archive -O 15367597.zip
-unzip 15367597.zip -d ./zenodo_data
+wget https://zenodo.org/api/records/15707494/files-archive -O 15707494.zip
+unzip 15707494.zip -d ./zenodo_data
 ```
