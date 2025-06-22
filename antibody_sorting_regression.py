@@ -410,10 +410,10 @@ for sort in sorts:
     plt.scatter(char_df["SPR KD"].mask(lambda col: col > 300, 300), y_score_val2)
     ax.invert_xaxis()
     plt.ylabel("model score")
-    plt.xlabel("SPR KD")
+    plt.xlabel("SPR KD (nM)")
     fig.canvas.draw()
     labels = [item.get_text() for item in ax.get_xmajorticklabels()]
-    labels = ["Fail" if item == "100" else item for item in labels]
+    labels = ["Fail" if item == "300" else item for item in labels]
     ax.set_xticks(ax.get_xticks(minor=False)[1:-1])
     ax.set_xticklabels(labels[1:-1])
     plt.savefig(f"plots/{target}_val_SPR_scatter.pdf")
